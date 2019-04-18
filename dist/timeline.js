@@ -9982,7 +9982,7 @@ function () {
           max = Math.max(max, item.top + item.height);
         });
 
-        if (min > margin.axis) {
+        if (min > margin.axis + margin.groupTBPadding) {
           // there is an empty gap between the lowest item and the axis
           var offset = min - margin.axis;
           max -= offset;
@@ -9991,7 +9991,7 @@ function () {
           });
         }
 
-        height = max + margin.item.vertical / 2;
+        height = margin.groupTBPadding + max + margin.item.vertical / 2;
 
         if (this.heightMode !== "fitItems") {
           height = Math.max(height, this.props.label.height);
@@ -16041,7 +16041,8 @@ function (_Component) {
           horizontal: 10,
           vertical: 10
         },
-        axis: 20
+        axis: 20,
+        groupTBPadding: 10
       },
       showTooltips: true,
       tooltip: {
@@ -16375,6 +16376,7 @@ function (_Component) {
             this.options.margin.item.vertical = options.margin;
           } else if (__WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_typeof___default()(options.margin) === 'object') {
             __WEBPACK_IMPORTED_MODULE_9__util__["selectiveExtend"](['axis'], this.options.margin, options.margin);
+            __WEBPACK_IMPORTED_MODULE_9__util__["selectiveExtend"](['groupTBPadding'], this.options.margin, options.margin);
 
             if ('item' in options.margin) {
               if (typeof options.margin.item === 'number') {
@@ -16836,11 +16838,13 @@ function (_Component) {
 
       var firstMargin = {
         item: margin.item,
-        axis: margin.axis
+        axis: margin.axis,
+        groupTBPadding: margin.groupTBPadding
       };
       var nonFirstMargin = {
         item: margin.item,
-        axis: margin.item.vertical / 2
+        axis: margin.item.vertical / 2,
+        groupTBPadding: margin.groupTBPadding
       };
       var height = 0;
       var minHeight = margin.axis + margin.item.vertical; // redraw the background group
@@ -18914,7 +18918,7 @@ function stack(items, margin, force, shouldBailItemsRedrawFunction) {
 
     if (item.stack && item.top === null) {
       // initialize top position
-      item.top = margin.axis;
+      item.top = margin.axis + (margin.groupTBPadding === undefined ? 0 : margin.groupTBPadding);
       var shouldBail = false;
 
       do {
@@ -20911,6 +20915,9 @@ var allOptions = {
         number: number
       }
     },
+    groupTBPadding: {
+      number: number
+    },
     __type__: {
       object: object,
       number: number
@@ -21180,7 +21187,8 @@ var configureOptions = {
       item: {
         horizontal: [10, 0, 100, 1],
         vertical: [10, 0, 100, 1]
-      }
+      },
+      groupTBPadding: [10, 0, 100, 1]
     },
     max: '',
     maxHeight: '',
