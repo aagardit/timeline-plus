@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-04-22
+ * @date    2019-05-06
  *
  */
 
@@ -7597,7 +7597,7 @@ function (_Component) {
       props.minorLabelHeight = showMinorLabels ? props.minorCharHeight : 0;
       props.majorLabelHeight = showMajorLabels ? props.majorCharHeight : 0;
       props.height = props.minorLabelHeight + props.majorLabelHeight;
-      props.width = foreground.offsetWidth;
+      if (Math.abs(props.width - foreground.offsetWidth) > 1) props.width = foreground.offsetWidth;
       props.minorLineHeight = this.body.domProps.root.height - props.majorLabelHeight - (this.options.orientation.axis == 'top' ? this.body.domProps.bottom.height : this.body.domProps.top.height);
       props.minorLineWidth = 1; // TODO: really calculate width
 
@@ -13790,7 +13790,8 @@ function () {
         bottom: {},
         border: {},
         scrollTop: 0,
-        scrollTopMin: 0
+        scrollTopMin: 0,
+        storedAutoHeight: 0
       };
       this.on('rangechange', function () {
         if (_this.initialDrawDone === true) {
@@ -14693,7 +14694,13 @@ function () {
 
       var contentHeight = Math.max(props.left.height, props.center.height, props.right.height);
       var autoHeight = props.top.height + contentHeight + props.bottom.height + props.borderRootHeight + props.border.top + props.border.bottom;
-      dom.root.style.height = __WEBPACK_IMPORTED_MODULE_6__util__["option"].asSize(options.height, "".concat(autoHeight, "px")); // calculate heights of the content panels
+
+      if (Math.abs(this.props.storedAutoHeight - autoHeight) > 1) {
+        //This is to fix an issue with an odd 'jitter' when custom scaling is applied
+        dom.root.style.height = __WEBPACK_IMPORTED_MODULE_6__util__["option"].asSize(options.height, "".concat(autoHeight, "px"));
+        this.props.storedAutoHeight = autoHeight;
+      } else dom.root.style.height = this.props.storedAutoHeight; // calculate heights of the content panels
+
 
       props.root.height = dom.root.offsetHeight;
       props.background.height = props.root.height - props.borderRootHeight;
