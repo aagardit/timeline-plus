@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-05-06
+ * @date    2019-07-25
  *
  */
 
@@ -17895,6 +17895,10 @@ function (_Component) {
           me.options.onMoving(itemData, function (itemData) {
             if (itemData) {
               props.item.setData(_this8._cloneItemData(itemData, 'Date'));
+
+              if (itemData.minusX !== undefined) {
+                props.initialX -= itemData.minusX;
+              }
             }
           });
         });
