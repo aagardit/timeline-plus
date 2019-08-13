@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-07-25
+ * @date    2019-08-13
  *
  */
 
@@ -19873,7 +19873,8 @@ function (_Item) {
 
         this.dom.point.style.right = "".concat(this.right, "px");
       } else {
-        this.left = start - this.props.dot.width; // reposition point
+        var offset = this.data.leftOffset != undefined ? this.data.leftOffset : 0;
+        this.left = start - this.props.dot.width + offset; // reposition point
 
         this.dom.point.style.left = "".concat(this.left, "px");
       }
