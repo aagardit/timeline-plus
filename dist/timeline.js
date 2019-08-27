@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-08-13
+ * @date    2019-08-27
  *
  */
 
@@ -3619,7 +3619,7 @@ function () {
         });
         anchor.appendChild(deleteButton);
         this.dom.deleteButton = deleteButton;
-      } else if (!this.selected && this.dom.deleteButton) {
+      } else if ((!this.selected || !editable) && this.dom.deleteButton) {
         // remove button
         if (this.dom.deleteButton.parentNode) {
           this.dom.deleteButton.parentNode.removeChild(this.dom.deleteButton);
