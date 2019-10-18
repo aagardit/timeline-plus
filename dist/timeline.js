@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-08-27
+ * @date    2019-10-18
  *
  */
 
@@ -7706,7 +7706,7 @@ function (_Component) {
         }
 
         if (this.options.showMinorLabels && showMinorGrid) {
-          var label = this._repaintMinorText(x, step.getLabelMinor(current), orientation, className);
+          var label = this._repaintMinorText(x, step.getLabelMinor(current, width), orientation, className);
 
           label.style.width = "".concat(width, "px"); // set width to prevent overflow
         }
@@ -7717,7 +7717,7 @@ function (_Component) {
               xFirstMajorLabel = x;
             }
 
-            label = this._repaintMajorText(x, step.getLabelMajor(current), orientation, className);
+            label = this._repaintMajorText(x, step.getLabelMajor(current, width), orientation, className);
           }
 
           line = this._repaintMajorLine(x, width, orientation, className);
@@ -7743,7 +7743,7 @@ function (_Component) {
       if (this.options.showMajorLabels) {
         var leftTime = this.body.util.toTime(0); // upper bound estimation
 
-        var leftText = step.getLabelMajor(leftTime);
+        var leftText = step.getLabelMajor(leftTime, width);
         var widthText = leftText.length * (this.props.majorCharWidth || 10) + 10;
 
         if (xFirstMajorLabel == undefined || widthText < xFirstMajorLabel) {
@@ -8661,7 +8661,7 @@ function () {
 
   }, {
     key: "getLabelMinor",
-    value: function getLabelMinor(date) {
+    value: function getLabelMinor(date, minorWidth) {
       if (date == undefined) {
         date = this.current;
       }
@@ -8671,7 +8671,7 @@ function () {
       }
 
       if (typeof this.format.minorLabels === "function") {
-        return this.format.minorLabels(date, this.scale, this.step);
+        return this.format.minorLabels(date, this.scale, this.step, minorWidth);
       }
 
       var format = this.format.minorLabels[this.scale]; // noinspection FallThroughInSwitchStatementJS
@@ -8697,7 +8697,7 @@ function () {
 
   }, {
     key: "getLabelMajor",
-    value: function getLabelMajor(date) {
+    value: function getLabelMajor(date, minorWidth) {
       if (date == undefined) {
         date = this.current;
       }
@@ -8707,7 +8707,7 @@ function () {
       }
 
       if (typeof this.format.majorLabels === "function") {
-        return this.format.majorLabels(date, this.scale, this.step);
+        return this.format.majorLabels(date, this.scale, this.step, minorWidth);
       }
 
       var format = this.format.majorLabels[this.scale];
