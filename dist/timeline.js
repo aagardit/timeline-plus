@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-10-18
+ * @date    2019-12-03
  *
  */
 
@@ -9452,8 +9452,13 @@ function () {
     this.itemSet.body.emitter.on("checkRangedItems", function () {
       me.checkRangedItems = true;
     });
+    var bgColor = undefined;
 
-    this._create();
+    if (data != null && data.swimlaneColor != null) {
+      bgColor = data.swimlaneColor;
+    }
+
+    this._create(bgColor);
 
     this.setData(data);
   }
@@ -9465,7 +9470,7 @@ function () {
 
   __WEBPACK_IMPORTED_MODULE_2__babel_runtime_helpers_createClass___default()(Group, [{
     key: "_create",
-    value: function _create() {
+    value: function _create(bgColor) {
       var label = document.createElement('div');
 
       if (this.itemSet.options.groupEditable.order) {
@@ -9485,6 +9490,7 @@ function () {
       this.dom.foreground = foreground;
       this.dom.background = document.createElement('div');
       this.dom.background.className = 'timeline-group';
+      if (bgColor != undefined) this.dom.background.style.backgroundColor = bgColor;
       this.dom.axis = document.createElement('div');
       this.dom.axis.className = 'timeline-group'; // create a hidden marker to detect when the Timelines container is attached
       // to the DOM, or the style of a parent of the Timeline is changed from
@@ -9738,12 +9744,11 @@ function () {
           }).filter(function (item) {
             return !!item;
           })))
-          /**
-          * Get all visible items in range
-          * @return {array} items
-          */
-
         };
+        /**
+        * Get all visible items in range
+        * @return {array} items
+        */
 
         var getVisibleItems = function getVisibleItems() {
           var visibleItems = _this._updateItemsInRange(orderedItems, _this.visibleItems.filter(function (item) {
@@ -21559,23 +21564,15 @@ module.exports = __webpack_require__(347);
 
 __webpack_require__(162);
 
-function _global() {
-  const data = _interopRequireDefault(__webpack_require__(334));
+var _global = _interopRequireDefault(__webpack_require__(334));
 
-  _global = function () {
-    return data;
-  };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-  return data;
-}
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-if (_global().default._babelPolyfill && typeof console !== "undefined" && console.warn) {
+if (_global["default"]._babelPolyfill && typeof console !== "undefined" && console.warn) {
   console.warn("@babel/polyfill is loaded more than once on this page. This is probably not desirable/intended " + "and may have consequences if different versions of the polyfills are applied sequentially. " + "If you do need to load the polyfill more than once, use @babel/polyfill/noConflict " + "instead to bypass the warning.");
 }
 
-_global().default._babelPolyfill = true;
+_global["default"]._babelPolyfill = true;
 
 /***/ }),
 /* 162 */
