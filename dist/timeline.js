@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2019-12-03
+ * @date    2020-02-18
  *
  */
 
@@ -17413,10 +17413,26 @@ function (_Component) {
     value: function _orderGroups() {
       if (this.groupsData) {
         // reorder the groups
-        var groupIds = this.groupsData.getIds({
+        var gps = this.groupsData.get({
           order: this.options.groupOrder
         });
-        groupIds = this._orderNestedGroups(groupIds);
+        var groupIds = [];
+        var indexedGroups = {}; //Dictionary of id, GroupObj
+
+        var sortedGroupsClusteredByParent = {}; //Dictionary of id, array of GroupObjs with nestedInGroup==id
+
+        for (var i = 0; i < gps.length; i++) {
+          groupIds.push(gps[i].id);
+          indexedGroups[gps[i].id] = gps[i];
+
+          if (!sortedGroupsClusteredByParent.hasOwnProperty(gps[i].nestedInGroup)) {
+            sortedGroupsClusteredByParent[gps[i].nestedInGroup] = [];
+          }
+
+          sortedGroupsClusteredByParent[gps[i].nestedInGroup].push(gps[i]);
+        }
+
+        groupIds = this._orderNestedGroups(groupIds, indexedGroups, sortedGroupsClusteredByParent);
         var changed = !__WEBPACK_IMPORTED_MODULE_9__util__["equalArray"](groupIds, this.groupIds);
 
         if (changed) {
@@ -17447,9 +17463,8 @@ function (_Component) {
 
   }, {
     key: "_orderNestedGroups",
-    value: function _orderNestedGroups(groupIds) {
+    value: function _orderNestedGroups(groupIds, indexedGroups, sortedClustered) {
       var _this6 = this;
-
       /**
        * Recursively order nested groups
        *
@@ -17458,22 +17473,27 @@ function (_Component) {
        * @returns {Array.<number>}
        * @private
        */
-      function getOrderedNestedGroups(t, groupIds) {
+
+
+      function getOrderedNestedGroups(t, groupIds, indexedGroups, sortedClustered) {
         var result = [];
         groupIds.forEach(function (groupId) {
           result.push(groupId);
-          var groupData = t.groupsData.get(groupId);
+          var groupData = indexedGroups[groupId];
 
           if (groupData.nestedGroups) {
-            var nestedGroupIds = t.groupsData.get({
-              filter: function filter(nestedGroup) {
-                return nestedGroup.nestedInGroup == groupId;
-              },
-              order: t.options.groupOrder
-            }).map(function (nestedGroup) {
-              return nestedGroup.id;
-            });
-            result = result.concat(getOrderedNestedGroups(t, nestedGroupIds));
+            var nestedGroupIds = [];
+
+            if (sortedClustered.hasOwnProperty(groupId)) {
+              //essentially "Dictionary.containskey(groupId)"
+              var nestedGroups = sortedClustered[groupId];
+
+              for (var i = 0; i < nestedGroups.length; i++) {
+                nestedGroupIds.push(nestedGroups[i].id);
+              }
+            }
+
+            result = result.concat(getOrderedNestedGroups(t, nestedGroupIds, indexedGroups, sortedClustered));
           }
         });
         return result;
@@ -17482,7 +17502,7 @@ function (_Component) {
       var topGroupIds = groupIds.filter(function (groupId) {
         return !_this6.groupsData.get(groupId).nestedInGroup;
       });
-      return getOrderedNestedGroups(this, topGroupIds);
+      return getOrderedNestedGroups(this, topGroupIds, indexedGroups, sortedClustered);
     }
     /**
      * Add a new item
