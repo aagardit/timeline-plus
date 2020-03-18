@@ -3,7 +3,7 @@
  * https://yotamberk.github.io/timeline-plus
  *
  * @version 2.3.6
- * @date    2020-03-13
+ * @date    2020-03-17
  *
  */
 
@@ -10320,6 +10320,7 @@ function () {
       var initialPosByStart = __WEBPACK_IMPORTED_MODULE_3__util__["binarySearchCustom"](orderedItems.byStart, searchFunction, 'data', 'start'); // trace the visible items from the inital start pos both ways until an invisible item is found, we only look at the start values.
 
       this._traceVisible(initialPosByStart, orderedItems.byStart, visibleItems, visibleItemsLookup, function (item) {
+        if (item.data.end == undefined) return item.data.start > upperBound || item.data.start < lowerBound;
         return item.data.start > upperBound || item.data.end < lowerBound;
       }); // if the window has changed programmatically without overlapping the old window, the ranged items with start < lowerBound and end > upperbound are not shown.
       // We therefore have to brute force check all items in the byEnd list
